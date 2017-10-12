@@ -41,20 +41,20 @@ $(document).ready(() => {
             var obj = new TCPUPWorker();
 
             var d = $.Deferred();
-            //d.then(function () {
-            console.log('Envío y Recepción de paquetes terminado');
-            obj.run()
-            //})
-            //      .then(function () {
-            console.log('Calculando')
-            //    setTimeout(function() {
-            obj.resolve();
-            //  }, 90000)
-            console.log('Cáculo terminado');
-            //    })
-            //  d.resolve();
-            //return d 
-            //console.log('dddddddd');
+            d.then(function () {
+                console.log('Envío y Recepción de paquetes terminado');
+                obj.run()
+            })
+                    .then(function () {
+                        console.log('Calculando')
+                        setTimeout(function () {
+                            obj.resolve();
+                        }, 90000)
+                        console.log('Cáculo terminado');
+                    })
+            d.resolve();
+            return d
+            console.log('dddddddd');
         }).then(function () {
             // bajada
         });
