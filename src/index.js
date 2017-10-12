@@ -1,7 +1,8 @@
 var $ = require("jquery");
 import Config from './Config';
-import TCPUPWorker from './class/TCPUPWorker';
-import SendDecoys from './class/SendDecoys';
+//import TCPUPWorker from './class/TCPUPWorker';
+//import SendDecoys from './class/SendDecoys';
+import ReceiveDecoys from './class/ReceiveDecoys';
 var io = require("socket.io-client");
 //var bs = require('bootstrap') ;
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -24,48 +25,21 @@ var umbral = 10000;
 
 $(document).ready(() => {
 
+    $('#btn').click(() => {
 
-
-    $('#btn').click(function () {
-        var def = $.Deferred();
-        $.when(def).then(function () {
-            console.log('Paso 01');
-            var obj = new SendDecoys();
-            var def = obj.run();
-
-            return def;
-
-        }).then(function () {
-            console.log('Paso 02');
-
-            var obj = new TCPUPWorker();
-
-            var d = $.Deferred();
-            d.then(function () {
-                console.log('Envío y Recepción de paquetes terminado');
-                obj.run()
-            })
-                    .then(function () {
-                        console.log('Calculando')
-                        setTimeout(function () {
-                            obj.resolve();
-                        }, 90000)
-                        console.log('Cáculo terminado');
-                    })
-            d.resolve();
-            return d
-            console.log('dddddddd');
-        }).then(function () {
-            // bajada
+        (new ReceiveDecoys()).run().then(() => {
+            console.log('WAZAWAZA')
         });
-        def.resolve();
-
+//        let promise = (new SendDecoys())
+//                .run()
+//                .then(function () {
+//                    console.log('Subida');
+//                    return (new TCPUPWorker()).run()
+//                })
+//                .then(v => {
+//                    console.log('---------------' + JSON.stringify(v))
+//                }).then(() => {
+//                    console.log('Bajada');
+//                });
     });
-
-
-
-
-
-
-
 });

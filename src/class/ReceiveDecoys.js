@@ -1,9 +1,9 @@
 import Config from './../Config';
 
-class SendDecoys {
+class ReceiveDecoys {
 
     static filesName() {
-        return ['128kbits', '512kbits', '2mbits'];
+        return [8192, 32768, 76800];
 
     }
 
@@ -17,13 +17,13 @@ class SendDecoys {
 
     async run() {
 
-        let files = SendDecoys.filesName();
-        let fileSize = SendDecoys.fileSize();
+        let files = ReceiveDecoys.filesName();
+        let fileSize = ReceiveDecoys.fileSize();
 
         do {
 
-            let item = files.shift();
-            let itemSize = fileSize.shift();
+            var item = files.shift();
+            var itemSize = fileSize.shift();
             $('#print-res ').append(item + ' - - ' + itemSize + '<br/>')
             let response = await this.execute(item)
             console.log('demora en ' + item + ': ' + this.delay);
@@ -32,12 +32,18 @@ class SendDecoys {
 
     }
 
-    async execute(item) {
+    async execute(size) {
 
         this.delay = 0;
         var t1 = new Date().getTime();
         var t2 = t1;
-        return $.ajax("decoys/" + item)
+        return $.ajax(
+                {
+                    url: "upload",
+                    processData: false,
+                    method: "POST",
+                    data: ReceiveDecoys.getBytes(size)
+                })
                 .done(() => {
                     t2 = new Date().getTime();
                     this.delay = t2 - t1;
@@ -46,7 +52,16 @@ class SendDecoys {
                     console.log("error");
                 })
     }
+
+    static getBytes(size) {
+
+        var buffer = new ArrayBuffer(size);
+        var longInt8View = new Uint8Array(buffer);
+
+        return buffer;
+    }
+
 }
 
 
-export default SendDecoys;
+export default ReceiveDecoys;

@@ -37,6 +37,14 @@ app.get('/:path/:id', function (req, res) {
 })
 
 
+app.post('/upload', (rep, res) => {
+    
+    console.log('llamado');
+    res.send('ok')
+    
+})
+
+
 
 server = http.listen(3000, function () {
     console.log('Listening on port %d ' + address(), server.address().port);
