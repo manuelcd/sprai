@@ -1,4 +1,5 @@
 import Config from './../Config';
+var numeral = require('numeral');
 
 class ReceiveDecoys {
 
@@ -26,7 +27,13 @@ class ReceiveDecoys {
             var itemSize = fileSize.shift();
             $('#print-res ').append(item + ' - - ' + itemSize + '<br/>')
             let response = await this.execute(item)
-            console.log('demora en ' + item + ': ' + this.delay);
+            this.delay = response.t2-response.t1;
+            
+            console.log('Subiendo ' + item + ' (Bytes)');
+            console.log('t1=' + response.t1.getTime() + ' ms')
+            console.log('t2=' + response.t2.getTime() + ' ms')
+            console.log('Tiempo de demora =' + this.delay + ' ms')
+            console.log('=======================================================');
 
         } while (this.delay < Config.umbral && files.length != 0);
 
@@ -35,7 +42,7 @@ class ReceiveDecoys {
     async execute(size) {
 
         this.delay = 0;
-        var t1 = new Date().getTime();
+        var t1 = new Date();
         var t2 = t1;
         return $.ajax(
                 {
@@ -44,9 +51,9 @@ class ReceiveDecoys {
                     method: "POST",
                     data: ReceiveDecoys.getBytes(size)
                 })
-                .done(() => {
-                    t2 = new Date().getTime();
-                    this.delay = t2 - t1;
+                .then(() => {
+                    t2 = new Date();
+                    return {t1: t1, t2: t2};
                 })
                 .fail(function () {
                     console.log("error");

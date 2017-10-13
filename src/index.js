@@ -1,7 +1,8 @@
 var $ = require("jquery");
 import Config from './Config';
-//import TCPUPWorker from './class/TCPUPWorker';
-//import SendDecoys from './class/SendDecoys';
+var numeral = require('numeral');
+import TCPUPWorker from './class/TCPUPWorker';
+import SendDecoys from './class/SendDecoys';
 import ReceiveDecoys from './class/ReceiveDecoys';
 var io = require("socket.io-client");
 //var bs = require('bootstrap') ;
@@ -27,19 +28,28 @@ $(document).ready(() => {
 
     $('#btn').click(() => {
 
-        (new ReceiveDecoys()).run().then(() => {
-            console.log('WAZAWAZA')
+        let promise = (new SendDecoys())
+                .run().then((r) => {
+            //'tamaño de archivo a probar (envia con ajax y regresar resultados desde bd)'
+            return Config;
+        })
+                .then(function (t) {
+                    console.log(' ')
+                    console.log(' ')
+                    console.log('[[[[ ----Prueba de descarga---- ]]]]');
+                    console.log(' ')
+                    return (new TCPUPWorker(t)).run()
+                })
+                .then(v => {
+                    //console.log('---------------' + JSON.stringify(v))
+                }).then(() => {
+            console.log('[[[[ ----Enviando señuelos de Subida---- ]]]]');
+            console.log(' ')
+            return (new ReceiveDecoys()).run()
+
+        }).then(() => {
+            console.log('Comienza prueba de Subida [PENDIENTE]')
         });
-//        let promise = (new SendDecoys())
-//                .run()
-//                .then(function () {
-//                    console.log('Subida');
-//                    return (new TCPUPWorker()).run()
-//                })
-//                .then(v => {
-//                    console.log('---------------' + JSON.stringify(v))
-//                }).then(() => {
-//                    console.log('Bajada');
-//                });
     });
+
 });
